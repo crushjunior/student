@@ -34,9 +34,9 @@ public class Form extends VerticalLayout {
         filter.setValueChangeMode(ValueChangeMode.LAZY);
         filter.addValueChangeListener(e -> showStudents(e.getValue()));
 
-        grid.asSingleSelect().addValueChangeListener(e -> {
-            studentEditor.editStudent(e.getValue());
-        });
+        grid.asSingleSelect().addValueChangeListener(e ->
+            studentEditor.editStudent(e.getValue())
+        );
 
         addNewBtn.addClickListener(e -> studentEditor.editStudent(new Student()));
 

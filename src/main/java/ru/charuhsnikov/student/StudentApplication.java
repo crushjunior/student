@@ -1,7 +1,5 @@
 package ru.charuhsnikov.student;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +16,7 @@ public class StudentApplication {
 
     @Bean
     public CommandLineRunner loadData(StudentRepository repository) {
-        return (args) -> {
+        return args -> {
 
             repository.save(new Student("Jack", 23, true, 5000));
             repository.save(new Student("Chloe", 22, false, 3000));
