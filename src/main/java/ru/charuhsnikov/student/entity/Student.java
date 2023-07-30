@@ -18,11 +18,5 @@ public class Student {
     private int age;
     private boolean isMale;
     private double scholarship;
-
-    public Student(String name, int age, boolean isMale, double scholarship) {
-        this.name = name;
-        this.age = age;
-        this.isMale = isMale;
-        this.scholarship = scholarship;
-    }
+    private boolean isActual = true;
 }
