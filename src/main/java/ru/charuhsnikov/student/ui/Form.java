@@ -8,12 +8,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import ru.charuhsnikov.student.entity.Student;
-import ru.charuhsnikov.student.repository.StudentRepository;
+//import ru.charuhsnikov.student.repository.StudentRepository;
+import ru.charuhsnikov.student.service.StudentService;
 
 @Route
 public class Form extends VerticalLayout {
 
-    private final StudentRepository studentRepository;
+    //private final StudentRepository studentRepository;
+
+    private final StudentService studentService;
 
     private final StudentEditor studentEditor;
 
@@ -25,8 +28,9 @@ public class Form extends VerticalLayout {
 
     private final HorizontalLayout horizontalLayout = new HorizontalLayout(filter, addNewBtn);
 
-    public Form(StudentRepository studentRepository, StudentEditor studentEditor) {
-        this.studentRepository = studentRepository;
+    public Form(StudentService studentService, StudentEditor studentEditor) {
+        //this.studentRepository = studentRepository;
+        this.studentService = studentService;
         this.studentEditor = studentEditor;
 
         add(horizontalLayout, grid, studentEditor);
@@ -50,10 +54,12 @@ public class Form extends VerticalLayout {
     }
 
     private void showStudents(String name) {
-        if (name.isEmpty()) {
-            grid.setItems(studentRepository.findAll());
-        } else {
-            grid.setItems(studentRepository.findByNameIgnoreCase(name));
-        }
+//        if (name.isEmpty()) {
+//            grid.setItems(studentRepository.findAll());
+//        } else {
+//            grid.setItems(studentRepository.findByNameIgnoreCase(name));
+//        }
+        studentService.findAllOrOne(name);
     }
+
 }

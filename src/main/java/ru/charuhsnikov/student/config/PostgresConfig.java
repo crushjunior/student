@@ -1,11 +1,11 @@
 package ru.charuhsnikov.student.config;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,26 +20,28 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "h2EntityManagerFactory",
-        transactionManagerRef = "h2TransactionManager",
+        entityManagerFactoryRef = "postgresEntityManagerFactory",
+        transactionManagerRef = "postgresTransactionManager",
         basePackages = {
-                "ru.charuhsnikov.student.repository.h2"
+                "ru.charuhsnikov.student.repository.postgres"
         }
 )
-public class H2Config {
-    @Value("${spring.h2.datasource.url}")
+public class PostgresConfig {
+    @Value("${spring.postgres.datasource.url}")
     private String url;
 
-    @Value("${spring.h2.datasource.username}")
+    @Value("${spring.postgres.datasource.username}")
     private String userName;
 
-    @Value("${spring.h2.datasource.password}")
+    @Value("${spring.postgres.datasource.password}")
     private String password;
 
-    @Value("${spring.h2.datasource.driverClassName}")
+    @Value("${spring.postgres.datasource.driverClassName}")
     private String driverClass;
-    @Bean(name = "h2DataSource")
-    public DataSource h2DataSource() {
+
+    @Primary
+    @Bean(name = "postgresDataSource")
+    public DataSource postgresDataSource() {
         return DataSourceBuilder.create()
                 .url(url)
                 .password(password)
@@ -48,24 +50,26 @@ public class H2Config {
                 .build();
     }
 
-    @Bean(name = "h2EntityManagerFactory")
+    @Primary
+    @Bean(name = "postgresEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                       @Qualifier("h2DataSource") DataSource dataSource) {
-
+                                                                       @Qualifier("postgresDataSource") DataSource dataSource) {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+
 
         return builder
                 .dataSource(dataSource)
                 .packages("ru.charuhsnikov.student.entity")
-                .persistenceUnit("h2")
+                .persistenceUnit("postgres")
                 .properties(properties)
                 .build();
     }
 
-
-    @Bean(name = "h2TransactionManager")
-    public PlatformTransactionManager transactionManager(@Qualifier("h2EntityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {
+    @Primary
+    @Bean(name = "postgresTransactionManager")
+    public PlatformTransactionManager transactionManager(@Qualifier("postgresEntityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory.getObject());
     }
 }

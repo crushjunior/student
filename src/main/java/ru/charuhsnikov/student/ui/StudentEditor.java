@@ -14,12 +14,14 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Setter;
 import ru.charuhsnikov.student.entity.Student;
-import ru.charuhsnikov.student.repository.StudentRepository;
+//import ru.charuhsnikov.student.repository.StudentRepository;
+import ru.charuhsnikov.student.service.StudentService;
 
 @SpringComponent
 @UIScope
 public class StudentEditor extends VerticalLayout implements KeyNotifier {
-    private final StudentRepository studentRepository;
+    //private final StudentRepository studentRepository;
+    private final StudentService studentService;
     private Student student;
 
     private TextField name = new TextField("Name");
@@ -42,8 +44,9 @@ public class StudentEditor extends VerticalLayout implements KeyNotifier {
         void onChange();
     }
 
-    public StudentEditor(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentEditor(StudentService studentService) {
+        //this.studentRepository = studentRepository;
+        this.studentService = studentService;
 
         add(name, age, isMale, scholarship, actions);
 
@@ -70,11 +73,13 @@ public class StudentEditor extends VerticalLayout implements KeyNotifier {
             return;
         }
 
-        if (newStudent.getId() != null) {
-            student = studentRepository.findById(newStudent.getId()).orElse(newStudent);
-        } else {
-            student = newStudent;
-        }
+//        if (newStudent.getId() != null) {
+//            student = studentRepository.findById(newStudent.getId()).orElse(newStudent);
+//        } else {
+//            student = newStudent;
+//        }
+
+        student = studentService.update(newStudent);
 
         binder.setBean(student);
 
@@ -84,12 +89,14 @@ public class StudentEditor extends VerticalLayout implements KeyNotifier {
     }
 
     private void delete() {
-        studentRepository.delete(student);
+        //studentRepository.delete(student);
+        studentService.delete(student);
         changeHandler.onChange();
     }
 
     private void save() {
-        studentRepository.save(student);
+        //studentRepository.save(student);
+        studentService.save(student);
         changeHandler.onChange();
     }
 }
